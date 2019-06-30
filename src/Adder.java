@@ -7,10 +7,11 @@ import java.text.DecimalFormat;
 public class Adder {
 
     /**
-     * The first 500000 GB per month is $0.029 per GB (0 to 500000 GB)
-     * The next 1500000 GB / MONTH is $0.025 (the next 1500 TB / MONTH) so from 500001 GB to 1500000 GB
-     * 3000000 more GB/ MOnTH is $.02 1500001 to 3000000 GB
-     * each region has a set of pricings
+     * each region has a set of pricings for exmaple in virginia:
+     * The first 500 TB per month is $0.029 per GB (0 to 500000 GB)
+     * The next 1500 TB / MONTH is $0.025
+     * 3 more PB is $.02
+     *
      *
      * @param args - arguments to be given to the program
      */
@@ -48,19 +49,17 @@ public class Adder {
                 String timeRange = reader.readLine();
                 String[] timeRangeTokenized = timeRange.split(" ");
 
-                // Now I have the amount per unit for x amount of time
-                // Convert everything to TB/Month
-                // Retrieve the region
-                // According to the region, convert TB/Month to pricing accordingly
-
                 double storageUsageRate = numericalAmountOfStorage / (AWSUtility.convertToMonths(t.name()));
 
                 // convert time range to months
                 //double timeRangeMonths = AWSUtility.convertTimeRangeToMonths(Double.parseDouble(timeRangeTokenized[0]), timeRangeTokenized[1]);
 
+                // Enter a region to specify the pricing tiers for the data being streamed
                 System.out.print(name + ": Enter a region this data is to be serviced in: ");
 
                 String region = reader.readLine();
+
+                // Retrieve the pricing for the region`
                 double price = RegionPricingService.retrievePricingForRegion(region, storageUsageRate);
                 DecimalFormat df = new DecimalFormat("0.00");
                 System.out.println(String.format("%s, based on your input of %s in %s you will expect to be paying at least: $%s per month", name, storageInput, region, df.format((price / 0.001))));
