@@ -80,10 +80,20 @@ public class RegionPricingService {
     }
 
     public static double retrievePricingForRegion(String region, double storageAmount) {
-        Region r = AWSUtility.searchEnum(Region.class, region);
-        if (r == null) {
-            throw new IllegalArgumentException("Region given is invalid: " + r);
+
+        if (region == null) {
+            throw new IllegalArgumentException("Region input given is null: " + region);
         }
+
+        Region r;
+
+        try {
+            r = Region.fromString(region);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Region given is invalid: " + region);
+        }
+
+
 
         if (storageAmount <= 500) {
             double price = storageAmount * regionToPricingRules.get(r).get(500.);

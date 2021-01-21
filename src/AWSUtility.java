@@ -1,17 +1,4 @@
 public class AWSUtility {
-    public static <T extends Enum<?>> T searchEnum(Class<T> enumeration, String search) {
-        if (search != null && !search.isEmpty()) {
-            for (T each : enumeration.getEnumConstants()) {
-                int result = each.name().compareToIgnoreCase(search);
-                if (result == 0) {
-                    return each;
-                }
-            }
-        }
-
-        return null;
-    }
-
 
     /**
      * The Unit to be parsed from the input.
@@ -21,9 +8,16 @@ public class AWSUtility {
      * @throws Exception
      */
     public static Unit getUnits(String input) throws Exception {
-        Unit u = AWSUtility.searchEnum(Unit.class, input);
-        if (u == null) {
-            throw new Exception("Invalid unit type found");
+        if (input == null || input.isEmpty()) {
+            throw new IllegalArgumentException("Unit string given is null or empty");
+        }
+
+        Unit u;
+
+        try {
+            u = Unit.fromString(input);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
 
         return u;
@@ -41,7 +35,15 @@ public class AWSUtility {
             throw new IllegalArgumentException("Time string given is null or empty");
         }
 
-        return AWSUtility.searchEnum(Time.class, input);
+        Time t;
+
+        try {
+            t = Time.fromString(input);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+
+        return t;
     }
 
     public static Double parseAmountToDouble(String input) throws Exception {
